@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gemini · Telegram
 // @namespace    gemini-telegram-violet
-// @version      3.0.1
+// @version      3.0.2
 // @description  Makes Gemini look and work like Telegram Web (Night): Telegram chat list with avatars, last messages and real dates, the ☰ menu and Settings, a solid chat header with "typing…", bubbles with real send times, Telegram's message box, right-click menus with reactions, reply, forward, pin, select and delete, chat info panel, in-chat search and more.
 // @author       Patrick
 // @match        https://gemini.google.com/*
@@ -35,7 +35,7 @@
   };
   /* ========================================================================= */
 
-  const VERSION = '3.0.1';
+  const VERSION = '3.0.2';
   const W = (typeof unsafeWindow !== 'undefined' && unsafeWindow) || window;
   const hasGM = typeof GM_getValue === 'function';
   const gmGet = (k, d) => {
@@ -1558,7 +1558,8 @@ body.tg-still *, body.tg-still *::before, body.tg-still *::after { animation-dur
   function C(id = convId()) { return (DB.c[id] = DB.c[id] || { r: {}, p: [], h: {}, t: {}, s: {} }); }
   function rawUserLines(el) {
     const lines = $$('.query-text-line', el);
-    if (lines.length) return lines.map(l => ({ el: l, text: (l.innerText || l.textContent || '').replace(/ /g, ' ') }));
+    // textContent, not innerText: hidden lines (our ↩ / ↪ headers) must read back exactly the same
+    if (lines.length) return lines.map(l => ({ el: l, text: (l.textContent || '').replace(/ /g, ' ').trim() }));
     const q = $('.query-text', el);
     return (q ? q.innerText : '').split('\n').map(t => ({ el: null, text: t }));
   }
